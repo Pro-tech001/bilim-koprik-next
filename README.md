@@ -77,3 +77,4 @@ supabase/schema.sql          ← jadvallar, triggerlar, RLS siyosatlari
 2. **Provider** — mijoz tomonida ham rol tekshiriladi.
 3. **RLS (bazada)** — asosiy himoya: o'quvchi kurs yarata olmaydi, o'ziga baho qo'ya olmaydi,
    boshqalarning javoblarini ko'rmaydi, hech kim rolini o'zgartira olmaydi.
+"# bilim-koprik-next" 
