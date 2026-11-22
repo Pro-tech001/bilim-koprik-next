@@ -24,7 +24,7 @@ export default function StudentProvider({ children }) {
   const reload = useCallback(async (uid) => {
     const id = uid || me?.id;
     const [enr, les, prog, asg, sub] = await Promise.all([
-      sb.from('enrollments').select('course_id, created_at, course:courses(id,title,description,subject, mentor:profiles(full_name))').eq('student_id', id),
+      sb.from('enrollments').select('course_id, created_at, course:courses(id,title,description,subject, mentor:profiles!mentor_id(full_name))').eq('student_id', id),
       sb.from('lessons').select('id,course_id,title,position').order('position'),
       sb.from('lesson_progress').select('lesson_id').eq('student_id', id),
       sb.from('assignments').select('*').order('due_at', { ascending: true, nullsFirst: false }),
