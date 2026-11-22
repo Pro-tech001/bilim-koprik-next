@@ -27,9 +27,9 @@ export default function MentorProvider({ children }) {
     const [c, l, e, a, s, p] = await Promise.all([
       sb.from('courses').select('*').eq('mentor_id', id).order('created_at', { ascending: false }),
       sb.from('lessons').select('id,course_id,title,content,video_url,position').order('position'),
-      sb.from('enrollments').select('student_id,course_id,created_at, student:profiles(id,full_name,phone)'),
+      sb.from('enrollments').select('student_id,course_id,created_at, student:profiles!student_id(id,full_name,phone)'),
       sb.from('assignments').select('*').order('created_at', { ascending: false }),
-      sb.from('submissions').select('*, student:profiles(full_name)').order('submitted_at', { ascending: false }),
+      sb.from('submissions').select('*, student:profiles!student_id(full_name)').order('submitted_at', { ascending: false }),
       sb.from('lesson_progress').select('student_id,lesson_id')
     ]);
     const bad = [c, l, e, a, s, p].find((r) => r.error);
