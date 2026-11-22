@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { errText } from '@/lib/utils';
+import { useT } from '@/lib/i18n';
 
 // Universal forma oynasi: onSubmit(FormData) xato tashlasa — oynada ko'rsatiladi.
-export default function FormModal({ title, children, submitLabel, onSubmit, onClose, cancelLabel = 'Bekor qilish' }) {
+export default function FormModal({ title, children, submitLabel, onSubmit, onClose, cancelLabel }) {
+  const t = useT();
   const ref = useRef(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
@@ -34,8 +36,8 @@ export default function FormModal({ title, children, submitLabel, onSubmit, onCl
         {children}
         {err && <div className="msg err" role="alert">{err}</div>}
         <div className="row" style={{ justifyContent: 'flex-end' }}>
-          <button type="button" className="btn secondary" onClick={onClose}>{cancelLabel}</button>
-          {submitLabel && <button className="btn" type="submit" disabled={busy}>{busy ? 'Saqlanmoqda...' : submitLabel}</button>}
+          <button type="button" className="btn secondary" onClick={onClose}>{cancelLabel || t('Bekor qilish')}</button>
+          {submitLabel && <button className="btn" type="submit" disabled={busy}>{busy ? t('Saqlanmoqda...') : submitLabel}</button>}
         </div>
       </form>
     </dialog>

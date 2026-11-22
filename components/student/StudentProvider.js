@@ -5,6 +5,7 @@ import { getSupabase } from '@/lib/supabase/client';
 import { errText } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 import Sidebar from '@/components/Sidebar';
+import { useT } from '@/lib/i18n';
 import SubmitModal from './SubmitModal';
 
 const Ctx = createContext(null);
@@ -16,6 +17,7 @@ export default function StudentProvider({ children }) {
   const sb = getSupabase();
   const router = useRouter();
   const toast = useToast();
+  const t = useT();
   const [me, setMe] = useState(null);
   const [data, setData] = useState(EMPTY);
   const [ready, setReady] = useState(false);
@@ -65,7 +67,7 @@ export default function StudentProvider({ children }) {
     return { courseById, lessonsOf, pctOf };
   }, [data]);
 
-  if (!ready || !me) return <div className="main"><p className="muted">Yuklanmoqda...</p></div>;
+  if (!ready || !me) return <div className="main"><p className="muted">{t('Yuklanmoqda...')}</p></div>;
 
   const todo = data.assignments.filter((a) => !data.subs.has(a.id)).length;
   const value = { me, setMe, ...data, ...helpers, reload, sb, toast, openSubmit: setSubmitFor };
@@ -84,7 +86,8 @@ export default function StudentProvider({ children }) {
             { href: '/student/apply', label: 'Kursga ariza' },
             { href: '/student/tasks', label: 'Topshiriqlar', count: todo },
             { href: '/student/results', label: 'Natijalarim' },
-            { href: '/student/profile', label: 'Profil' }
+            { href: '/student/profile', label: 'Profil' },
+            { href: '/student/about', label: 'Sayt haqida' }
           ]}
         />
         <main className="main">{children}</main>

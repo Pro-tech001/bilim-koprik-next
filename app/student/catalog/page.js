@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useStudent } from '@/components/student/StudentProvider';
 import { Empty } from '@/components/student/parts';
 import { errText, initial } from '@/lib/utils';
+import { useT } from '@/lib/i18n';
 
 export default function Catalog() {
   const { sb, me, courses, reload, toast } = useStudent();
   const router = useRouter();
   const [list, setList] = useState(null);
   const [err, setErr] = useState('');
+  const t = useT();
   const [busy, setBusy] = useState(null);
 
   useEffect(() => {
@@ -34,9 +36,9 @@ export default function Catalog() {
 
   return (
     <div className="form" style={{ gap: 20 }}>
-      <h1>Kurslar katalogi</h1>
+      <h1>{t('Kurslar katalogi')}</h1>
       {err && <div className="msg err">{err}</div>}
-      {!list && !err && <p className="muted">Yuklanmoqda...</p>}
+      {!list && !err && <p className="muted">{t('Yuklanmoqda...')}</p>}
       {list && (
         <div className="grid wide">
           {list.map((c) => (
@@ -45,18 +47,18 @@ export default function Catalog() {
                 <div className="ico">{initial(c.title)}</div>
                 <div>
                   <h3>{c.title}</h3>
-                  <span className="small muted">{c.subject || 'Fan ko‘rsatilmagan'} · {c.mentor?.full_name}</span>
+                  <span className="small muted">{c.subject || t('Fan ko‘rsatilmagan')} · {c.mentor?.full_name}</span>
                 </div>
               </div>
-              <p className="muted small">{c.description || 'Tavsif yo‘q'}</p>
+              <p className="muted small">{c.description || t('Tavsif yo‘q')}</p>
               {mine.has(c.id) ? (
-                <Link className="btn secondary" href={`/student/courses/${c.id}`}>Kursni ochish</Link>
+                <Link className="btn secondary" href={`/student/courses/${c.id}`}>{t('Kursni ochish')}</Link>
               ) : (
-                <button className="btn" data-act="enroll" disabled={busy === c.id} onClick={() => enroll(c.id)}>Kursga yozilish</button>
+                <button className="btn" data-act="enroll" disabled={busy === c.id} onClick={() => enroll(c.id)}>{t('Kursga yozilish')}</button>
               )}
             </div>
           ))}
-          {!list.length && <Empty>Hozircha kurslar yo‘q. Mentorlar kurs qo‘shgach shu yerda ko‘rinadi.</Empty>}
+          {!list.length && <Empty>{t('Hozircha kurslar yo‘q. Mentorlar kurs qo‘shgach shu yerda ko‘rinadi.')}</Empty>}
         </div>
       )}
     </div>

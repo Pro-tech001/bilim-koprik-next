@@ -1,14 +1,18 @@
 import './globals.css';
+import { cookies } from 'next/headers';
 import { ToastProvider } from '@/components/Toast';
+import { I18nProvider } from '@/lib/i18n';
+import { normLang } from '@/lib/lang';
 
 export const metadata = {
   title: 'Bilim Ko‘prik',
   description: 'O‘quvchi va mentorlar uchun onlayn ta‘lim platformasi'
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const lang = normLang((await cookies()).get('lang')?.value);
   return (
-    <html lang="uz">
+    <html lang={lang === 'oz' ? 'uz' : lang}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -18,7 +22,9 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <ToastProvider>{children}</ToastProvider>
+        <I18nProvider initial={lang}>
+          <ToastProvider>{children}</ToastProvider>
+        </I18nProvider>
       </body>
     </html>
   );

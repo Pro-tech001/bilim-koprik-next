@@ -5,6 +5,7 @@ import { getSupabase } from '@/lib/supabase/client';
 import { errText } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 import Sidebar from '@/components/Sidebar';
+import { useT } from '@/lib/i18n';
 import { CourseModal, LessonModal, AssignmentModal, GradeModal, ReplyModal } from './modals';
 
 const Ctx = createContext(null);
@@ -17,6 +18,7 @@ export default function MentorProvider({ children }) {
   const sb = getSupabase();
   const router = useRouter();
   const toast = useToast();
+  const t = useT();
   const [me, setMe] = useState(null);
   const [data, setData] = useState(EMPTY);
   const [ready, setReady] = useState(false);
@@ -88,7 +90,7 @@ export default function MentorProvider({ children }) {
     return { course, asg, lessonsOf, studentsOf, progressPct, avgScore };
   }, [data]);
 
-  if (!ready || !me) return <div className="main"><p className="muted">Yuklanmoqda...</p></div>;
+  if (!ready || !me) return <div className="main"><p className="muted">{t('Yuklanmoqda...')}</p></div>;
 
   const pending = data.subs.filter((s) => s.score == null).length;
   const open = (type, props = {}) => {
@@ -117,7 +119,8 @@ export default function MentorProvider({ children }) {
             { group: 'Boshqaruv' },
             { href: '/mentor/grading', label: 'Baholash', count: pending },
             { href: '/mentor/stats', label: 'Statistika' },
-            { href: '/mentor/profile', label: 'Profil' }
+            { href: '/mentor/profile', label: 'Profil' },
+            { href: '/mentor/about', label: 'Sayt haqida' }
           ]}
         />
         <main className="main">{children}</main>

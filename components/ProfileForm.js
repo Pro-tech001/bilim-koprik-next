@@ -2,10 +2,12 @@
 import { getSupabase } from '@/lib/supabase/client';
 import { errText } from '@/lib/utils';
 import { useToast } from './Toast';
+import { useT } from '@/lib/i18n';
 
 export default function ProfileForm({ me, onSaved, withBio = false }) {
   const toast = useToast();
   const sb = getSupabase();
+  const t = useT();
 
   async function saveProfile(e) {
     e.preventDefault();
@@ -28,21 +30,21 @@ export default function ProfileForm({ me, onSaved, withBio = false }) {
 
   return (
     <div className="form" style={{ gap: 20, maxWidth: 560 }}>
-      <h1>Profil</h1>
+      <h1>{t('Profil')}</h1>
       <form className="card form" onSubmit={saveProfile}>
-        <label className="field">Ism-familiya<input name="full_name" defaultValue={me.full_name} required /></label>
-        <label className="field">Telefon<input name="phone" defaultValue={me.phone || ''} /></label>
+        <label className="field">{t('Ism-familiya')}<input name="full_name" defaultValue={me.full_name} required /></label>
+        <label className="field">{t('Telefon')}<input name="phone" defaultValue={me.phone || ''} /></label>
         {withBio && (
-          <label className="field">O‘zingiz haqingizda (o‘quvchilar ko‘radi)
+          <label className="field">{t('O‘zingiz haqingizda (o‘quvchilar ko‘radi)')}
             <textarea name="bio" defaultValue={me.bio || ''} />
           </label>
         )}
-        <button className="btn" type="submit">Saqlash</button>
+        <button className="btn" type="submit">{t('Saqlash')}</button>
       </form>
       <form className="card form" onSubmit={savePassword}>
-        <h2>Parolni o‘zgartirish</h2>
-        <label className="field">Yangi parol<input type="password" name="p" minLength={6} required autoComplete="new-password" /></label>
-        <button className="btn secondary" type="submit">Parolni yangilash</button>
+        <h2>{t('Parolni o‘zgartirish')}</h2>
+        <label className="field">{t('Yangi parol')}<input type="password" name="p" minLength={6} required autoComplete="new-password" /></label>
+        <button className="btn secondary" type="submit">{t('Parolni yangilash')}</button>
       </form>
     </div>
   );
