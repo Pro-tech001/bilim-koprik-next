@@ -76,7 +76,7 @@ export function AsgRow({ a }) {
       </div>
       <span className={'badge ' + (pend ? 'orange' : 'gray')}>{list.length} javob{pend ? `, ${pend} kutmoqda` : ''}</span>
       <button className="btn sm secondary" onClick={() => open('assignment', { assignment: a })}>Tahrirlash</button>
-      <button className="btn sm ghost" onClick={remove}>O‘chirish</button>
+      <button className="btn sm danger" onClick={remove}>O‘chirish</button>
     </div>
   );
 }

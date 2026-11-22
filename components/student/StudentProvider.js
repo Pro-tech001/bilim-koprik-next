@@ -81,6 +81,7 @@ export default function StudentProvider({ children }) {
             { href: '/student', label: 'Bosh sahifa' },
             { href: '/student/courses', label: 'Kurslarim' },
             { href: '/student/catalog', label: 'Kurslar katalogi' },
+            { href: '/student/apply', label: 'Kursga ariza' },
             { href: '/student/tasks', label: 'Topshiriqlar', count: todo },
             { href: '/student/results', label: 'Natijalarim' },
             { href: '/student/profile', label: 'Profil' }

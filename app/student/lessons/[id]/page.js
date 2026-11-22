@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useStudent } from '@/components/student/StudentProvider';
 import { Empty } from '@/components/student/parts';
-import { errText, toEmbed } from '@/lib/utils';
+import { errText, linkInfo } from '@/lib/utils';
 
 export default function LessonPage() {
   const { id } = useParams();
@@ -24,7 +24,7 @@ export default function LessonPage() {
   const i = ls.findIndex((x) => x.id === id);
   const prev = ls[i - 1];
   const next = ls[i + 1];
-  const embed = toEmbed(l.video_url);
+  const media = linkInfo(l.video_url);
   const isDone = done.has(id);
 
   async function toggleDone() {
@@ -41,11 +41,21 @@ export default function LessonPage() {
     <div className="form" style={{ gap: 20 }}>
       <Link href={`/student/courses/${l.course_id}`} className="small">← {courseById(l.course_id)?.title || 'Kurs'}</Link>
       <h1>{l.title}</h1>
-      {embed ? (
-        <div className="video"><iframe src={embed} title={l.title} allowFullScreen /></div>
-      ) : l.video_url ? (
-        <a className="btn secondary" href={l.video_url} target="_blank" rel="noopener noreferrer">Videoni ochish</a>
-      ) : null}
+      {media?.kind === 'youtube' && (
+        <div className="video"><iframe src={media.embed} title={l.title} allowFullScreen /></div>
+      )}
+      {media?.kind === 'telegram-post' && (
+        <div className="tg-post">
+          <iframe src={media.embed} title={l.title} loading="lazy" />
+          <a className="btn secondary" href={media.url} target="_blank" rel="noopener noreferrer">Telegram’da ochish</a>
+        </div>
+      )}
+      {media?.kind === 'telegram' && (
+        <a className="btn tg" href={media.url} target="_blank" rel="noopener noreferrer">Telegram kanalni ochish</a>
+      )}
+      {media?.kind === 'link' && (
+        <a className="btn secondary" href={media.url} target="_blank" rel="noopener noreferrer">Materialni ochish</a>
+      )}
       <div className="card"><div className="lesson-body">{l.content || 'Matn yo‘q'}</div></div>
       <div className="row between">
         {prev ? <Link className="btn secondary" href={`/student/lessons/${prev.id}`}>← Oldingi dars</Link> : <span />}

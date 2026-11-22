@@ -2,9 +2,18 @@
 import Link from 'next/link';
 import { useMentor } from '@/components/mentor/MentorProvider';
 import { Empty } from '@/components/mentor/parts';
+import { errText } from '@/lib/utils';
 
 export default function MentorCourses() {
-  const { courses, lessonsOf, studentsOf, assignments, open } = useMentor();
+  const { courses, lessonsOf, studentsOf, assignments, open, sb, reload, toast } = useMentor();
+
+  async function removeCourse(c) {
+    if (!confirm(`"${c.title}" kursi, uning darslari, topshiriqlari va javoblari o‘chiriladi. Davom etasizmi?`)) return;
+    const { error } = await sb.from('courses').delete().eq('id', c.id);
+    if (error) return toast(errText(error));
+    await reload();
+    toast('Kurs o‘chirildi');
+  }
   return (
     <div className="form" style={{ gap: 20 }}>
       <div className="row between">
@@ -25,6 +34,7 @@ export default function MentorCourses() {
             <div className="row">
               <Link className="btn sm" href={`/mentor/courses/${c.id}`}>Boshqarish</Link>
               <button className="btn sm secondary" onClick={() => open('course', { course: c })}>Tahrirlash</button>
+              <button className="btn sm danger" data-act="delCourse" onClick={() => removeCourse(c)}>O‘chirish</button>
             </div>
           </div>
         ))}

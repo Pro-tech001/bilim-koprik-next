@@ -27,7 +27,7 @@ export default function MentorCourse() {
   }
 
   async function removeLesson(lid) {
-    if (!confirm('Darsni o‘chirasizmi?')) return;
+    if (!confirm('Bu darsni o‘chirasizmi? Uni qaytarib bo‘lmaydi.')) return;
     const { error } = await sb.from('lessons').delete().eq('id', lid);
     if (error) return toast(errText(error));
     await reload();
@@ -41,7 +41,7 @@ export default function MentorCourse() {
         <div><h1>{c.title}</h1><p className="muted">{c.subject}</p></div>
         <div className="row">
           <button className="btn secondary sm" onClick={() => open('course', { course: c })}>Tahrirlash</button>
-          <button className="btn secondary sm" onClick={removeCourse}>O‘chirish</button>
+          <button className="btn danger sm" onClick={removeCourse}>Kursni o‘chirish</button>
         </div>
       </div>
       {c.description && <p className="muted">{c.description}</p>}
@@ -57,10 +57,10 @@ export default function MentorCourse() {
               <div className="ico">{i + 1}</div>
               <div className="grow">
                 <span className="t">{l.title}</span>
-                <span className="small muted">{l.video_url ? 'Video bor · ' : ''}{(l.content || '').slice(0, 80)}</span>
+                <span className="small muted">{l.video_url ? (/t\.me|telegram/.test(l.video_url) ? 'Telegram · ' : 'Havola bor · ') : ''}{(l.content || '').slice(0, 80)}</span>
               </div>
               <button className="btn sm secondary" onClick={() => open('lesson', { lesson: l })}>Tahrirlash</button>
-              <button className="btn sm ghost" onClick={() => removeLesson(l.id)}>O‘chirish</button>
+              <button className="btn sm danger" onClick={() => removeLesson(l.id)}>O‘chirish</button>
             </div>
           ))}
           {!ls.length && <Empty>Dars yo‘q</Empty>}

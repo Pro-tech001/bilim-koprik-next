@@ -23,6 +23,8 @@ p{margin:0}
 .btn:disabled{opacity:.55;cursor:not-allowed}
 .btn.secondary{background:#fff;color:var(--ink);border:1px solid #CBD2E1}
 .btn.ghost{background:transparent;color:var(--muted)}
+.btn.danger{background:#fff;color:#B42318;border:1px solid #F3C2BD}
+.btn.danger:hover{background:#FEF3F2}
 .btn.sm{min-height:36px;padding:0 12px;font-size:14px}
 .btn.block{width:100%}
 label.field{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
@@ -121,3 +123,11 @@ dialog .modal{padding:24px;display:flex;flex-direction:column;gap:16px}
   .nav{flex-direction:row;flex-wrap:wrap}.nav .group{display:none}
   .side-foot{margin-top:0;flex-direction:row;align-items:center;flex-wrap:wrap}
 }
+.tg-post{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.tg-post iframe{width:100%;max-width:560px;height:520px;border:1px solid var(--line,#E3E7F0);border-radius:12px;background:#fff}
+.btn.tg{background:#229ED9;color:#fff;align-self:flex-start}
+.app-info{display:grid;grid-template-columns:minmax(110px,auto) 1fr;gap:6px 14px;margin:0;font-size:14px}
+.app-info dt{color:var(--muted);font-weight:600}
+.app-info dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+@media (max-width:520px){.app-info{grid-template-columns:1fr}.app-info dd{margin-bottom:6px}}
+.item .reply{display:block;margin-top:8px;padding:8px 12px;background:var(--green-bg);color:var(--ink);border-radius:8px;white-space:pre-wrap}

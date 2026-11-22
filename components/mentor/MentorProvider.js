@@ -5,13 +5,13 @@ import { getSupabase } from '@/lib/supabase/client';
 import { errText } from '@/lib/utils';
 import { useToast } from '@/components/Toast';
 import Sidebar from '@/components/Sidebar';
-import { CourseModal, LessonModal, AssignmentModal, GradeModal } from './modals';
+import { CourseModal, LessonModal, AssignmentModal, GradeModal, ReplyModal } from './modals';
 
 const Ctx = createContext(null);
 export const useMentor = () => useContext(Ctx);
 
 const EMPTY = { courses: [], lessons: [], enrollments: [], assignments: [], subs: [], progress: [] };
-const MODALS = { course: CourseModal, lesson: LessonModal, assignment: AssignmentModal, grade: GradeModal };
+const MODALS = { course: CourseModal, lesson: LessonModal, assignment: AssignmentModal, grade: GradeModal, reply: ReplyModal };
 
 export default function MentorProvider({ children }) {
   const sb = getSupabase();
@@ -21,6 +21,14 @@ export default function MentorProvider({ children }) {
   const [data, setData] = useState(EMPTY);
   const [ready, setReady] = useState(false);
   const [modal, setModal] = useState(null); // { type, props }
+  const [apps, setApps] = useState([]); // kurs uchun arizalar; null = bazada jadval yo'q
+
+  const loadApps = useCallback(async () => {
+    const { data: rows, error } = await sb.from('applications')
+      .select('*, student:profiles!student_id(full_name,phone), mentor:profiles!mentor_id(full_name)')
+      .order('created_at', { ascending: false });
+    setApps(error ? (error.code === 'PGRST205' || error.code === '42P01' ? null : []) : rows);
+  }, [sb]);
 
   const reload = useCallback(async (uid) => {
     const id = uid || me?.id;
@@ -45,7 +53,8 @@ export default function MentorProvider({ children }) {
       subs: s.data.filter((x) => myAsg.has(x.assignment_id)),
       progress: p.data
     });
-  }, [sb, me, toast]);
+    await loadApps();
+  }, [sb, me, toast, loadApps]);
 
   useEffect(() => {
     (async () => {
@@ -83,10 +92,11 @@ export default function MentorProvider({ children }) {
 
   const pending = data.subs.filter((s) => s.score == null).length;
   const open = (type, props = {}) => {
-    if (type !== 'course' && type !== 'grade' && !data.courses.length) return toast('Avval kurs yarating.');
+    if (['lesson', 'assignment'].includes(type) && !data.courses.length) return toast('Avval kurs yarating.');
     setModal({ type, props });
   };
-  const value = { me, setMe, ...data, ...helpers, pending, reload, sb, toast, open };
+  const newApps = (apps || []).filter((a) => a.status === 'new').length;
+  const value = { me, setMe, ...data, ...helpers, pending, apps, newApps, loadApps, reload, sb, toast, open };
   const Modal = modal && MODALS[modal.type];
 
   return (
@@ -100,6 +110,7 @@ export default function MentorProvider({ children }) {
             { group: 'Asosiy' },
             { href: '/mentor', label: 'Bosh sahifa' },
             { href: '/mentor/students', label: 'O‘quvchilar' },
+            { href: '/mentor/free-time', label: 'Bo‘sh vaqt (arizalar)', count: newApps },
             { group: 'Kontent' },
             { href: '/mentor/courses', label: 'Kurslarim' },
             { href: '/mentor/assignments', label: 'Topshiriqlar' },

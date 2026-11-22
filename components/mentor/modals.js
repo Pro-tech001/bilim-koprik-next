@@ -1,7 +1,7 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import FormModal from '@/components/FormModal';
-import { fmtDate, toLocalInput } from '@/lib/utils';
+import { fmtDate, toLocalInput, normalizeLink } from '@/lib/utils';
 import { useMentor } from './MentorProvider';
 
 function CourseSelect({ value, disabled }) {
@@ -60,7 +60,7 @@ export function LessonModal({ lesson: l, courseId, onClose }) {
   async function onSubmit(f) {
     const row = {
       title: String(f.get('title')).trim(),
-      video_url: String(f.get('video_url')).trim() || null,
+      video_url: normalizeLink(f.get('video_url')),
       content: String(f.get('content'))
     };
     if (!row.title) throw new Error('Dars nomini kiriting.');
@@ -80,8 +80,9 @@ export function LessonModal({ lesson: l, courseId, onClose }) {
     <FormModal title={l ? 'Darsni tahrirlash' : 'Yangi dars'} submitLabel={l ? 'Saqlash' : 'Qo‘shish'} onSubmit={onSubmit} onClose={onClose}>
       <CourseSelect value={l?.course_id || courseId} disabled={!!l} />
       <label className="field">Dars nomi<input name="title" required maxLength={200} defaultValue={l?.title || ''} /></label>
-      <label className="field">Video havola (YouTube, ixtiyoriy)
-        <input name="video_url" type="url" defaultValue={l?.video_url || ''} placeholder="https://youtube.com/watch?v=..." />
+      <label className="field">Video yoki havola (YouTube, Telegram — ixtiyoriy)
+        <input name="video_url" type="text" inputMode="url" defaultValue={l?.video_url || ''} placeholder="https://youtu.be/... yoki https://t.me/kanal/12" />
+        <span className="small muted">Telegram post havolasi (t.me/kanal/12) dars ichida ko‘rinadi. Kanal havolasi (t.me/kanal) tugma bo‘lib chiqadi.</span>
       </label>
       <label className="field">Dars matni<textarea name="content" style={{ minHeight: 180 }} defaultValue={l?.content || ''} /></label>
     </FormModal>
@@ -150,6 +151,44 @@ export function GradeModal({ submission: s, onClose }) {
         <input type="number" name="score" min={0} max={a.max_score} required defaultValue={s.score ?? ''} />
       </label>
       <label className="field">Izoh (o‘quvchi ko‘radi)<textarea name="feedback" defaultValue={s.feedback || ''} /></label>
+    </FormModal>
+  );
+}
+
+// Kurs arizasiga javob: qabul / rad. Javob matni ixtiyoriy.
+export function ReplyModal({ app: a, status, onClose }) {
+  const { sb, loadApps, toast } = useMentor();
+  const accept = status === 'accepted';
+
+  async function onSubmit(f) {
+    const { data, error } = await sb.from('applications')
+      .update({ status, reply: String(f.get('reply') || '').trim() || null })
+      .eq('id', a.id).select('id');
+    if (error) throw error;
+    await loadApps();
+    if (!data?.length) throw new Error('Bu arizaga boshqa mentor allaqachon javob bergan.');
+    toast(accept ? 'Ariza qabul qilindi' : 'Ariza rad etildi');
+  }
+
+  return (
+    <FormModal
+      title={accept ? 'Arizani qabul qilish' : 'Arizani rad etish'}
+      submitLabel={accept ? 'Qabul qilish' : 'Rad etish'}
+      onSubmit={onSubmit}
+      onClose={onClose}
+    >
+      <p className="small muted">
+        <b>{a.student?.full_name || 'O‘quvchi'}</b> · {a.subject}<br />Bo‘sh vaqti: {a.free_time || '—'}
+      </p>
+      <label className="field">
+        {accept ? 'Qachon o‘tib bera olasiz? (ixtiyoriy)' : 'Sabab (ixtiyoriy)'}
+        <textarea
+          name="reply"
+          maxLength={2000}
+          defaultValue={a.reply || ''}
+          placeholder={accept ? 'Masalan: Seshanba va payshanba 18:00 da, Telegram: @mening_kanalim' : 'Masalan: Hozir bu vaqtda bo‘sh emasman'}
+        />
+      </label>
     </FormModal>
   );
 }
