@@ -14,6 +14,10 @@ export default function ProfileForm({ me, onSaved, withBio = false }) {
     const f = new FormData(e.currentTarget);
     const upd = { full_name: String(f.get('full_name')).trim(), phone: String(f.get('phone')).trim() };
     if (withBio) upd.bio = String(f.get('bio')).trim();
+    if (withBio && 'certificate' in me) { // mentorlar.sql ishga tushirilgan bo'lsa
+      upd.certificate = String(f.get('certificate') || '').trim() || null;
+      upd.show_in_ticker = !!f.get('show_in_ticker');
+    }
     const { error } = await sb.from('profiles').update(upd).eq('id', me.id);
     if (error) return toast(errText(error));
     onSaved(upd);
@@ -38,6 +42,17 @@ export default function ProfileForm({ me, onSaved, withBio = false }) {
           <label className="field">{t('O‘zingiz haqingizda (o‘quvchilar ko‘radi)')}
             <textarea name="bio" defaultValue={me.bio || ''} />
           </label>
+        )}
+        {withBio && 'certificate' in me && (
+          <>
+            <label className="field">{t('Sertifikat (ixtiyoriy)')}
+              <input name="certificate" maxLength={120} defaultValue={me.certificate || ''} placeholder={t('Masalan: IELTS 8.0, CEFR C1, Milliy sertifikat A+')} />
+            </label>
+            <label className="row small" style={{ gap: 8 }}>
+              <input type="checkbox" name="show_in_ticker" style={{ width: 18, minHeight: 18 }} defaultChecked={me.show_in_ticker !== false} />
+              {t('Ismim kirish sahifasidagi mentorlar lentasida ko‘rinsin')}
+            </label>
+          </>
         )}
         <button className="btn" type="submit">{t('Saqlash')}</button>
       </form>

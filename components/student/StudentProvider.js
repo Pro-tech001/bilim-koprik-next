@@ -7,6 +7,7 @@ import { useToast } from '@/components/Toast';
 import Sidebar from '@/components/Sidebar';
 import { useT } from '@/lib/i18n';
 import SubmitModal from './SubmitModal';
+import { xpOf, levelOf, BADGES } from '@/lib/xp';
 
 const Ctx = createContext(null);
 export const useStudent = () => useContext(Ctx);
@@ -64,7 +65,21 @@ export default function StudentProvider({ children }) {
       const ls = lessonsOf(cid);
       return ls.length ? Math.round((ls.filter((l) => data.done.has(l.id)).length / ls.length) * 100) : 0;
     };
-    return { courseById, lessonsOf, pctOf };
+    // O'yin: XP, daraja, nishonlar
+    const ratios = [...data.subs.values()].filter((x) => x.score != null).map((x) => {
+      const a = data.assignments.find((y) => y.id === x.assignment_id);
+      return a ? x.score / a.max_score : 0;
+    });
+    const st = {
+      lessonsDone: data.done.size,
+      submissions: data.subs.size,
+      ratios,
+      coursesDone: data.courses.filter((c) => lessonsOf(c.id).length && pctOf(c.id) === 100).length,
+      courses: data.courses.length
+    };
+    const xp = xpOf(st);
+    const game = { st, xp, level: levelOf(xp), badges: BADGES.map((b) => ({ ...b, got: b.ok(st) })) };
+    return { courseById, lessonsOf, pctOf, game };
   }, [data]);
 
   if (!ready || !me) return <div className="main"><p className="muted">{t('Yuklanmoqda...')}</p></div>;
@@ -86,6 +101,7 @@ export default function StudentProvider({ children }) {
             { href: '/student/apply', label: 'Kursga ariza' },
             { href: '/student/tasks', label: 'Topshiriqlar', count: todo },
             { href: '/student/results', label: 'Natijalarim' },
+            { href: '/student/achievements', label: 'Yutuqlarim' },
             { href: '/student/profile', label: 'Profil' },
             { href: '/student/about', label: 'Sayt haqida' }
           ]}

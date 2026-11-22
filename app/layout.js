@@ -1,19 +1,20 @@
 import './globals.css';
-import { cookies } from 'next/headers';
 import { ToastProvider } from '@/components/Toast';
 import { I18nProvider } from '@/lib/i18n';
-import { normLang } from '@/lib/lang';
 
 export const metadata = {
   title: 'Bilim Ko‘prik',
   description: 'O‘quvchi va mentorlar uchun onlayn ta‘lim platformasi'
 };
 
-export default async function RootLayout({ children }) {
-  const lang = normLang((await cookies()).get('lang')?.value);
+// Til brauzerda (cookie'dan) o'qiladi: sahifalar statik qoladi va tez ochiladi.
+const LANG_BOOT = "try{var m=document.cookie.match(/(?:^|; )lang=(\\w+)/);if(m&&m[1]!=='uz'){var d=document.documentElement;d.classList.add('i18n-wait');setTimeout(function(){d.classList.remove('i18n-wait')},1500)}}catch(e){}";
+
+export default function RootLayout({ children }) {
   return (
-    <html lang={lang === 'oz' ? 'uz' : lang}>
+    <html lang="uz" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: LANG_BOOT }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
@@ -22,7 +23,7 @@ export default async function RootLayout({ children }) {
         />
       </head>
       <body>
-        <I18nProvider initial={lang}>
+        <I18nProvider>
           <ToastProvider>{children}</ToastProvider>
         </I18nProvider>
       </body>

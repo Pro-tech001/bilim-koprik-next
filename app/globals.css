@@ -145,3 +145,51 @@ dialog .modal{padding:24px;display:flex;flex-direction:column;gap:16px}
 .side-foot .lang{align-self:flex-start;margin:0 0 4px 12px}
 .mentor .side-foot .lang-btn{background:transparent;color:#B9C2D6;border-color:#33445E}
 .about-card .logo,.about-card a{align-self:flex-start}
+.i18n-wait body{visibility:hidden}
+/* O'yin: daraja, nishonlar, reyting */
+.level-card{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:20px 22px;border-radius:16px;background:linear-gradient(120deg,#16245C,#2F4BC7);color:#fff}
+.level-card .k{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B9C6FF}
+.level-card h2{color:#fff;margin:2px 0 8px;font-size:22px}
+.level-card .grow{flex:1 1 240px;min-width:0}
+.level-card .small{color:#DCE3FF}
+.level-card .btn.secondary{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff}
+.lvl-badge{width:64px;height:64px;flex:none;border-radius:18px;display:grid;place-items:center;background:#FFB27A;color:#3A1A06;font:700 28px/1 'Space Grotesk',Inter,sans-serif;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15)}
+.xpbar{height:10px;border-radius:999px;background:rgba(255,255,255,.2);overflow:hidden;margin-bottom:6px}
+.xpbar>div{height:100%;border-radius:inherit;background:#FFB27A;transition:width .6s ease}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.badge-tile{display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding:14px;border:1px dashed #CBD2E1;border-radius:14px;background:#F6F7FB}
+.badge-tile .ico{font-size:28px;line-height:1;filter:grayscale(1);opacity:.45}
+.badge-tile.got{border-style:solid;border-color:#BFE3CF;background:#fff}
+.badge-tile.got .ico{filter:none;opacity:1}
+.badge-tile .badge{margin-top:auto}
+.levels{display:flex;flex-direction:column;gap:6px}
+.lvl-row{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:10px}
+.lvl-row.cur{background:var(--accent-bg);font-weight:600}
+.lvl-num{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#E8EBF3;font-weight:700;font-size:13px}
+.lvl-row.cur .lvl-num{background:var(--accent);color:#fff}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lb-rank{width:36px;text-align:center;font-size:22px;font-weight:700;color:var(--muted);flex:none}
+.lb-xp{font-variant-numeric:tabular-nums;white-space:nowrap}
+.lb-row.top{background:#FFF8F1}
+@media (prefers-reduced-motion:reduce){.xpbar>div{transition:none}}
+/* Kirish sahifasidagi mentorlar lentasi */
+.ticker-band{flex:1 1 100%;background:#0A1322;color:#E9EDF5;display:flex;flex-direction:column;gap:2px;padding:10px 0;border-top:1px solid #1E2C44;overflow:hidden}
+.tk-lane{display:flex;align-items:center;gap:14px;min-width:0;padding:6px 0}
+.tk-label{flex:none;margin-left:max(16px,env(safe-area-inset-left,0px));padding:5px 12px;border-radius:999px;background:#1B2A40;color:#B9C6FF;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;position:relative;z-index:1;box-shadow:12px 0 14px #0A1322}
+.tk-lane.cert .tk-label{background:#3A2412;color:#FFB27A}
+.tk-viewport{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.tk-track{display:flex;width:max-content;gap:28px;margin:0;padding:0;list-style:none;animation:tk-move linear infinite}
+.tk-lane.cert .tk-track{animation-direction:reverse}
+.tk-track li{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;font-size:15px}
+.tk-track li::before{content:"";width:6px;height:6px;border-radius:50%;background:#2F4BC7;flex:none}
+.tk-lane.cert .tk-track li::before{background:#FFB27A}
+.tk-name{font-weight:600}
+.tk-cert{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#2A1C10;color:#FFCFA6;border:1px solid #5A3A1E}
+.ticker-band:hover .tk-track{animation-play-state:paused}
+@keyframes tk-move{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.tk-track{animation:none;flex-wrap:wrap;width:auto}.tk-track li[aria-hidden]{display:none}}
+@media (max-width:520px){.tk-lane{flex-direction:column;align-items:flex-start;gap:6px}.tk-viewport{width:100%}}
+/* Kirish sahifasi: ikki ustun + pastda lenta (lenta bo'sh joyga cho'zilmaydi) */
+.auth{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto}
+.auth>.ticker-band{grid-column:1/-1}
+@media (max-width:880px){.auth{grid-template-columns:1fr;grid-template-rows:auto}}

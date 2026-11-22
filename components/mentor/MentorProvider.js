@@ -119,6 +119,7 @@ export default function MentorProvider({ children }) {
             { group: 'Boshqaruv' },
             { href: '/mentor/grading', label: 'Baholash', count: pending },
             { href: '/mentor/stats', label: 'Statistika' },
+            { href: '/mentor/leaderboard', label: 'Reyting' },
             { href: '/mentor/profile', label: 'Profil' },
             { href: '/mentor/about', label: 'Sayt haqida' }
           ]}

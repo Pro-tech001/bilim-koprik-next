@@ -6,10 +6,12 @@ import { useStudent } from '@/components/student/StudentProvider';
 import { Empty } from '@/components/student/parts';
 import { errText, linkInfo } from '@/lib/utils';
 import { useT } from '@/lib/i18n';
+import { confetti } from '@/components/Confetti';
+import { levelOf, XP } from '@/lib/xp';
 
 export default function LessonPage() {
   const { id } = useParams();
-  const { sb, me, lessonsOf, courseById, done, reload, toast } = useStudent();
+  const { sb, me, lessonsOf, courseById, done, reload, toast, game } = useStudent();
   const [l, setL] = useState(undefined);
   const [busy, setBusy] = useState(false);
   const t = useT();
@@ -37,6 +39,13 @@ export default function LessonPage() {
     if (error) toast(errText(error));
     await reload();
     setBusy(false);
+    if (!error && !isDone) {
+      confetti();
+      const after = levelOf(game.xp + XP.lesson);
+      toast(after.n > game.level.n
+        ? t('Yangi daraja: {name}! 🎉', { name: t(after.name) })
+        : t('Barakalla! +{n} XP', { n: XP.lesson }), 3200);
+    }
   }
 
   return (

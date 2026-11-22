@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Logo from '@/components/Logo';
+import MentorTicker from '@/components/MentorTicker';
 import { getSupabase } from '@/lib/supabase/client';
 import { errText } from '@/lib/utils';
 import { useT, LangSwitch } from '@/lib/i18n';
@@ -166,6 +167,8 @@ export default function AuthPage() {
           )}
         </div>
       </section>
+
+      <MentorTicker />
     </div>
   );
 }

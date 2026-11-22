@@ -405,3 +405,27 @@ create policy profiles_select on public.profiles for select to authenticated
 grant select, insert, update, delete on public.applications to authenticated;
 revoke all on public.applications from anon;
 grant execute on function public.is_applicant(uuid) to authenticated;
+
+
+-- ---------- 7. MENTORLAR LENTASI (alohida fayl: mentorlar.sql) ----------
+
+alter table public.profiles add column if not exists certificate text;
+alter table public.profiles add column if not exists show_in_ticker boolean not null default true;
+
+do $$ begin
+  alter table public.profiles add constraint profiles_certificate_len check (char_length(certificate) <= 120);
+exception when duplicate_object then null; end $$;
+
+-- Lenta uchun: faqat ism va sertifikat, faqat rozi bo'lgan mentorlar.
+create or replace function public.public_mentors()
+returns table (full_name text, certificate text)
+language sql stable security definer set search_path = public as $$
+  select p.full_name, nullif(btrim(p.certificate), '')
+  from public.profiles p
+  where p.role = 'mentor' and p.show_in_ticker and btrim(p.full_name) <> ''
+  order by (nullif(btrim(p.certificate), '') is not null) desc, p.created_at
+  limit 60
+$$;
+
+revoke all on function public.public_mentors() from public;
+grant execute on function public.public_mentors() to anon, authenticated;

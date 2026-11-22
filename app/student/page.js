@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useStudent } from '@/components/student/StudentProvider';
 import { CourseRow, TaskRow, Empty } from '@/components/student/parts';
 import { useT } from '@/lib/i18n';
+import LevelCard from '@/components/student/LevelCard';
 
 export default function StudentHome() {
   const { me, courses, lessonsOf, done, assignments, subs, pctOf } = useStudent();
@@ -18,6 +19,8 @@ export default function StudentHome() {
         <h1>{t('Salom, {name}!', { name: me.full_name || t('o‘quvchi') })}</h1>
         <p className="muted">{todo.length ? t('{n} ta topshiriq sizni kutmoqda.', { n: todo.length }) : t('Barcha topshiriqlar topshirilgan. Barakalla!')}</p>
       </div>
+
+      <LevelCard />
 
       {next && (
         <div className="hero">
