@@ -15,7 +15,7 @@ export default function Catalog() {
 
   useEffect(() => {
     sb.from('courses')
-      .select('id,title,description,subject, mentor:profiles(full_name)')
+      .select('id,title,description,subject, mentor:profiles!mentor_id(full_name)')
       .eq('is_published', true)
       .order('created_at', { ascending: false })
       .then(({ data, error }) => (error ? setErr(errText(error)) : setList(data)));
